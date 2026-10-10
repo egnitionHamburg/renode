@@ -1,0 +1,177 @@
+cpu: CPU.CortexM @ sysbus
+    cpuType: "cortex-m4f"
+    nvic: nvic
+
+nvic: IRQControllers.NVIC @ sysbus 0xE000E000
+    priorityMask: 0xF0
+    IRQ -> cpu@0
+
+// 512 KB Flash
+flash: Memory.MappedMemory @ sysbus 0x00000000
+    size: 0x00080000
+
+// 64 KB SRAM (SRAM_L and SRAM_U combined)
+sram: Memory.MappedMemory @ sysbus 0x1FFF8000
+    size: 0x00010000
+
+// Add the native NXP FlexCAN controller(s)
+// Use explicit size bindings `<address, +size>` to prevent the S32K3XX model
+// from claiming 0x3200 bytes and overlapping with other peripherals.
+can0: CAN.NXP_FlexCAN @ sysbus <0x40024000, +0x1000>
+    -> nvic@81
+
+can1: CAN.NXP_FlexCAN @ sysbus <0x40025000, +0x1000>
+    -> nvic@88
+
+can2: CAN.NXP_FlexCAN @ sysbus <0x4002B000, +0x1000>
+    -> nvic@95
+
+portA: GPIOPort.NXPGPIOPort @ {
+        sysbus new Bus.BusMultiRegistration { address: 0x400FF000; size: 0x40; region: "gpio" };
+        sysbus new Bus.BusMultiRegistration { address: 0x40049000; size: 0x1000; region: "port" }
+    }
+    numberOfPins: 18
+    -> nvic@59
+
+portB: GPIOPort.NXPGPIOPort @ {
+        sysbus new Bus.BusMultiRegistration { address: 0x400FF040; size: 0x40; region: "gpio" };
+        sysbus new Bus.BusMultiRegistration { address: 0x4004A000; size: 0x1000; region: "port" }
+    }
+    numberOfPins: 18
+    -> nvic@60
+
+portC: GPIOPort.NXPGPIOPort @ {
+        sysbus new Bus.BusMultiRegistration { address: 0x400FF080; size: 0x40; region: "gpio" };
+        sysbus new Bus.BusMultiRegistration { address: 0x4004B000; size: 0x1000; region: "port" }
+    }
+    numberOfPins: 18
+    -> nvic@61
+
+portD: GPIOPort.NXPGPIOPort @ {
+        sysbus new Bus.BusMultiRegistration { address: 0x400FF0C0; size: 0x40; region: "gpio" };
+        sysbus new Bus.BusMultiRegistration { address: 0x4004C000; size: 0x1000; region: "port" }
+    }
+    numberOfPins: 18
+    -> nvic@62
+
+portE: GPIOPort.NXPGPIOPort @ {
+        sysbus new Bus.BusMultiRegistration { address: 0x400FF100; size: 0x40; region: "gpio" };
+        sysbus new Bus.BusMultiRegistration { address: 0x4004D000; size: 0x1000; region: "port" }
+    }
+    numberOfPins: 17
+    -> nvic@63
+
+ftm3: Memory.MappedMemory @ sysbus 0x40026000
+    size: 0x1000
+
+adc1: Memory.MappedMemory @ sysbus 0x40027000
+    size: 0x1000
+
+wdog: Memory.MappedMemory @ sysbus 0x40052000
+    size: 0x1000
+
+scg: Memory.MappedMemory @ sysbus 0x40064000
+    size: 0x1000
+
+pcc: Memory.MappedMemory @ sysbus 0x40065000
+    size: 0x1000
+
+
+cse_pram: Memory.MappedMemory @ sysbus 0x14001000
+    size: 0x1000
+
+mscm: Memory.MappedMemory @ sysbus 0x40001000
+    size: 0x1000
+
+dma: Memory.MappedMemory @ sysbus 0x40008000
+    size: 0x1000
+
+mpu: Memory.MappedMemory @ sysbus 0x4000D000
+    size: 0x1000
+
+erm: Memory.MappedMemory @ sysbus 0x40018000
+    size: 0x1000
+
+eim: Memory.MappedMemory @ sysbus 0x40019000
+    size: 0x1000
+
+ftfc: Memory.MappedMemory @ sysbus 0x40020000
+    size: 0x1000
+
+dmamux: Memory.MappedMemory @ sysbus 0x40021000
+    size: 0x1000
+
+lpspi0: Memory.MappedMemory @ sysbus 0x4002C000
+    size: 0x1000
+
+lpspi1: Memory.MappedMemory @ sysbus 0x4002D000
+    size: 0x1000
+
+lpspi2: Memory.MappedMemory @ sysbus 0x4002E000
+    size: 0x1000
+
+pdb1: Memory.MappedMemory @ sysbus 0x40031000
+    size: 0x1000
+
+crc: Memory.MappedMemory @ sysbus 0x40032000
+    size: 0x1000
+
+pdb0: Memory.MappedMemory @ sysbus 0x40036000
+    size: 0x1000
+
+lpit0: Memory.MappedMemory @ sysbus 0x40037000
+    size: 0x1000
+
+ftm0: Memory.MappedMemory @ sysbus 0x40038000
+    size: 0x1000
+
+ftm1: Memory.MappedMemory @ sysbus 0x40039000
+    size: 0x1000
+
+ftm2: Memory.MappedMemory @ sysbus 0x4003A000
+    size: 0x1000
+
+adc0: Memory.MappedMemory @ sysbus 0x4003B000
+    size: 0x1000
+
+rtc: Memory.MappedMemory @ sysbus 0x4003D000
+    size: 0x1000
+
+lptmr0: Memory.MappedMemory @ sysbus 0x40040000
+    size: 0x1000
+
+sim: Memory.MappedMemory @ sysbus 0x40048000
+    size: 0x1000
+
+flexio: Memory.MappedMemory @ sysbus 0x4005A000
+    size: 0x1000
+
+ewm: Memory.MappedMemory @ sysbus 0x40061000
+    size: 0x1000
+
+trgmux: Memory.MappedMemory @ sysbus 0x40063000
+    size: 0x1000
+
+lpi2c0: Memory.MappedMemory @ sysbus 0x40066000
+    size: 0x1000
+
+lpuart0: Memory.MappedMemory @ sysbus 0x4006A000
+    size: 0x1000
+
+lpuart1: Memory.MappedMemory @ sysbus 0x4006B000
+    size: 0x1000
+
+lpuart2: Memory.MappedMemory @ sysbus 0x4006C000
+    size: 0x1000
+
+cmp0: Memory.MappedMemory @ sysbus 0x40073000
+    size: 0x1000
+
+pmc: Memory.MappedMemory @ sysbus 0x4007D000
+    size: 0x1000
+
+smc: Memory.MappedMemory @ sysbus 0x4007E000
+    size: 0x1000
+
+rcm: Memory.MappedMemory @ sysbus 0x4007F000
+    size: 0x1000
