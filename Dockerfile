@@ -32,17 +32,18 @@ RUN wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-p
     apt-get update && \
     apt-get install -y dotnet-sdk-8.0
 
-# Install pyrenode3 globally
-RUN pip3 install git+https://github.com/antmicro/pyrenode3.git
+# Install pyrenode3 globally, pinned so that rebuilding the same commit gives the same image
+RUN pip3 install git+https://github.com/antmicro/pyrenode3.git@a4a804ddada430bb9a8ce81b00e78668b55486e2
 
 WORKDIR /renode
 
 # Copy the local repo into the container
 COPY . /renode
 
-# Build Renode natively. One MSBuild node and no shared compiler server: the parallel build runs out of memory
-# in a 4 GB Docker VM.
-RUN ./build.sh -- -m:1 -p:UseSharedCompilation=false
+# Build Renode natively. By default one MSBuild node and no shared compiler server: the parallel build runs out of
+# memory in a 4 GB Docker VM. CI has more memory and passes an empty MSBUILD_ARGS.
+ARG MSBUILD_ARGS="-m:1 -p:UseSharedCompilation=false"
+RUN ./build.sh -- $MSBUILD_ARGS
 
 # Set PATH so 'renode' and 'renode-test' commands work globally
 ENV PATH="/renode:${PATH}"

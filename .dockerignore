@@ -1,0 +1,4 @@
+# Build output of the host. .git stays: build.sh needs it to fetch lib/resources.
+output
+**/bin
+**/obj
